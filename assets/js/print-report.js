@@ -30,13 +30,13 @@ function generatePrintableReport(accountantName, reviewerName) {
                 }
                 .report-header {
                     text-align: center;
-                    font-size: 32px;
+                    font-size: 18px;
                     font-weight: bold;
-                    margin-top: 20px;
+                    margin-top: 1px;
                     margin-bottom: 30px;
                 }
                 .section-title {
-                    font-size: 18px;
+                    font-size: 16px;
                     font-weight: bold;
                     margin-top: 20px;
                     margin-bottom: 10px;
@@ -62,7 +62,7 @@ function generatePrintableReport(accountantName, reviewerName) {
                 }
                 .print-date {
                     text-align: left;
-                    font-size: 14px;
+                    font-size: 13px;
                     margin-top: 20px;
                     color: #555;
                 }
@@ -103,11 +103,6 @@ function generatePrintableReport(accountantName, reviewerName) {
 
             <div class="print-date">تاريخ الطباعة: ${printDate}</div>
 
-            <script>
-                window.onload = function() {
-                    window.print();
-                }
-            </script>
         </body>
         </html>
     `);
