@@ -103,6 +103,11 @@ function generatePrintableReport(accountantName, reviewerName) {
 
             <div class="print-date">تاريخ الطباعة: ${printDate}</div>
 
+            <script>
+                window.onload = function() {
+                    window.print();
+                }
+            </script>
         </body>
         </html>
     `);
