@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حساب بدل الابتعاث - نظام حساب البدلات</title>
+    
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts Arabic -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/scholarship.css">
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-calculator me-2"></i>
+                نظام حساب البدلات
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Scholarship Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="scholarship-header-card">
+                    <div class="text-center mb-3">
+                        <img src="assets/images/ministry-logo2.png" alt="شعار وزارة الدفاع" class="ministry-logo">
+                    </div>
+                    <div class="scholarship-icon-large">
+                    </div>
+                    <h2>حساب بدل الابتعاث</h2>
+                    <p class="lead mb-3">فرع الشؤون الإدارية والمالية للقوات البرية بالجنوبية - معهد سلاح المشاة</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="text-center">
+                                <small>أول 90 يوم</small>
+                                <div class="h5">75% من الراتب</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-center">
+                                <small>ما يزيد عن 90 يوم</small>
+                                <div class="h5">37.5% من الراتب</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Input Form -->
+            <div class="col-lg-6">
+                <div class="calculation-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-edit me-2"></i>بيانات حساب بدل الابتعاث</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="scholarshipForm">
+                            <!-- Date Range -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="startDate" class="form-label">تاريخ بداية الابتعاث</label>
+                                    <input type="date" class="form-control" id="startDate" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="endDate" class="form-label">تاريخ نهاية الابتعاث</label>
+                                    <input type="date" class="form-control" id="endDate" required>
+                                </div>
+                            </div>
+                            
+                            <!-- Calculation Method Info -->
+                            <div class="alert alert-info mb-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>نظام الحساب:</strong> أول 90 يوم = 75%، ما يزيد = 37.5%
+                            </div>
+
+                            <!-- Current Salary -->
+                            <div class="mb-3">
+                                <label for="currentSalary" class="form-label">الراتب الحالي (ريال)</label>
+                                <input type="number" class="form-control" id="currentSalary" min="0" step="0.01" required>
+                            </div>
+
+                            <!-- Previous Year Salary -->
+                            <div class="mb-3">
+                                <label for="previousSalary" class="form-label">راتب السنة الماضية (ريال)</label>
+                                <input type="number" class="form-control" id="previousSalary" min="0" step="0.01">
+                                <div class="form-text">يُستخدم في حالة عبور المدة سنتين</div>
+                            </div>
+
+                            <!-- Calculate Button -->
+                            <button type="button" class="btn btn-primary btn-lg w-100" onclick="calculateScholarship()">
+                                <i class="fas fa-calculator me-2"></i>
+                                احسب بدل الابتعاث
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="col-lg-6">
+                <div class="results-card" id="resultsCard" style="display: none;">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-line me-2"></i>نتائج حساب بدل الابتعاث</h5>
+                    </div>
+                    <div class="card-body" id="resultsContent">
+                        <!-- Results will be populated here -->
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button class="btn btn-outline-primary" onclick="printResults()">
+                                <i class="fas fa-print me-1"></i>
+                                طباعة
+                            </button>
+                            <button class="btn btn-outline-success" onclick="exportToPDF()">
+                                <i class="fas fa-file-pdf me-1"></i>
+                                تصدير PDF
+                            </button>
+                            <button class="btn btn-outline-dark" onclick="generatePrintableReport('سعيد آل حدله', 'فهد الشهراني')">
+                                <i class="fas fa-file-alt me-1"></i>
+                                طباعة تقرير رسمي
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Period Details -->
+                <div class="period-details-card" id="periodDetails" style="display: none;">
+                    <div class="card-header">
+                        <h6><i class="fas fa-calendar-alt me-2"></i>تفاصيل فترة الابتعاث</h6>
+                    </div>
+                    <div class="card-body" id="periodDetailsContent">
+                        <!-- Period details will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Print Footer (hidden on screen, visible on print) -->
+    <div class="print-footer" style="display: none;">
+        <div>نظام حساب البدلات - فرع الشؤون الإدارية والمالية للقوات البرية بالجنوبية - معهد سلاح المشاة</div>
+        <div>تاريخ الطباعة: <span id="printDate"></span></div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="assets/js/scholarship.js"></script>
+    <script src="assets/js/print-report.js"></script>
+    <script>
+        // Set print date
+        document.getElementById('printDate').textContent = new Date().toLocaleDateString('ar-SA');
+        
+        // Test function to ensure everything is loaded
+        window.addEventListener('load', function() {
+            console.log('Scholarship page loaded');
+            console.log('calculateScholarship function:', typeof calculateScholarship);
+        });
+    </script>
+</body>
+</html>
