@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Setup event listeners
 function setupEventListeners() {
     // Auto-calculate when inputs change
-    const inputs = ['startDate', 'endDate', 'currentSalary', 'previousSalary'];
+    const inputs = ['startDate', 'endDate', 'currentSalary', 'previousSalary', 'travelDays'];
     inputs.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
@@ -72,8 +72,9 @@ function performScholarshipCalculation() {
     const endDate = new Date(document.getElementById('endDate').value);
     const currentSalary = parseFloat(document.getElementById('currentSalary').value);
     const previousSalary = parseFloat(document.getElementById('previousSalary').value) || currentSalary;
+    const travelDays = parseInt(document.getElementById('travelDays').value) || 0;
     
-    console.log('Input values:', { startDate, endDate, currentSalary, previousSalary });
+    console.log('Input values:', { startDate, endDate, currentSalary, previousSalary, travelDays });
     
     // Validate dates
     if (endDate <= startDate) {
@@ -85,24 +86,35 @@ function performScholarshipCalculation() {
     console.log('Period details:', periodDetails);
     
     // Calculate scholarship allowance with proper 90-day distribution
-    const result = calculateScholarshipWithProperDistribution(periodDetails, currentSalary, previousSalary);
+    const result = calculateScholarshipWithProperDistribution(periodDetails, currentSalary, previousSalary, travelDays);
     
     return {
-        totalDays: periodDetails.totalDays,
+        totalDays: periodDetails.totalDays + travelDays,
+        scholarshipDays: periodDetails.totalDays,
+        travelDays: travelDays,
         totalAllowance: result.totalAllowance,
         yearlyCalculations: result.yearlyCalculations,
+        travelAllowance: result.travelAllowance,
         periodDetails: periodDetails,
-        first90Distribution: result.first90Distribution
+        first90Distribution: result.first90Distribution,
+        travelRate: result.travelRate
     };
 }
 
 // Calculate scholarship with proper 90-day distribution across years
-function calculateScholarshipWithProperDistribution(periodDetails, currentSalary, previousSalary) {
+function calculateScholarshipWithProperDistribution(periodDetails, currentSalary, previousSalary, travelDays) {
     const currentYear = new Date().getFullYear();
     let remainingFirst90Days = 90;
     let totalAllowance = 0;
     const yearlyCalculations = [];
     const first90Distribution = [];
+    
+    // Check if total days (scholarship + travel) exceed 90 days
+    const totalDaysIncludingTravel = periodDetails.totalDays + travelDays;
+    const travelRate = totalDaysIncludingTravel > 90 ? 0.375 : 0.75;
+    
+    // Calculate travel allowance based on total days
+    const travelAllowance = travelDays > 0 ? (currentSalary * travelRate / 30) * travelDays : 0;
     
     // First pass: distribute the first 90 days across years
     for (const yearData of periodDetails.years) {
@@ -158,10 +170,15 @@ function calculateScholarshipWithProperDistribution(periodDetails, currentSalary
         totalAllowance += yearTotalAllowance;
     }
     
+    // Add travel allowance to total
+    totalAllowance += travelAllowance;
+    
     return {
         totalAllowance,
         yearlyCalculations,
-        first90Distribution
+        first90Distribution,
+        travelAllowance,
+        travelRate: travelRate
     };
 }
 
@@ -311,13 +328,37 @@ function displayResults(result) {
         `;
     }
     
+    // Travel allowance
+    if (result.travelDays > 0) {
+        const travelPercentage = result.travelRate === 0.75 ? '75%' : '37.5%';
+        html += `
+            <div class="breakdown-item">
+                <span class="breakdown-label">أيام مسافة الطريق ${result.travelDays} يوم (${travelPercentage})</span>
+                <span class="breakdown-value">${formatCurrency(result.travelAllowance)}</span>
+            </div>
+        `;
+    }
+    
     // Summary
     html += `
         <div class="result-item">
-            <div class="result-label">إجمالي أيام الابتعاث</div>
-            <div class="result-value">${result.totalDays} يوم</div>
+            <div class="result-label">أيام الابتعاث</div>
+            <div class="result-value">${result.scholarshipDays} يوم</div>
         </div>
     `;
+    
+    if (result.travelDays > 0) {
+        html += `
+            <div class="result-item">
+                <div class="result-label">أيام مسافة الطريق</div>
+                <div class="result-value">${result.travelDays} يوم</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">إجمالي الأيام</div>
+                <div class="result-value">${result.totalDays} يوم</div>
+            </div>
+        `;
+    }
     
     // Total
     html += `
@@ -411,4 +452,3 @@ function exportToPDF() {
     
     doc.save('تقرير-بدل-الابتعاث.pdf');
 }
-
