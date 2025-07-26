@@ -100,6 +100,13 @@
                                 <div class="form-text">يُستخدم في حالة عبور المدة سنتين</div>
                             </div>
 
+                            <!-- Travel Days -->
+                            <div class="mb-3">
+                                <label for="travelDays" class="form-label">عدد أيام مسافة الطريق</label>
+                                <input type="number" class="form-control" id="travelDays" min="0" max="365" value="0">
+                                <div class="form-text">أيام إضافية تُحسب بنسبة 75% من الراتب</div>
+                            </div>
+
                             <!-- Calculate Button -->
                             <button type="button" class="btn btn-primary btn-lg w-100" onclick="calculateScholarship()">
                                 <i class="fas fa-calculator me-2"></i>
@@ -121,15 +128,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button class="btn btn-outline-primary" onclick="printResults()">
-                                <i class="fas fa-print me-1"></i>
-                                طباعة
-                            </button>
-                            <button class="btn btn-outline-success" onclick="exportToPDF()">
-                                <i class="fas fa-file-pdf me-1"></i>
-                                تصدير PDF
-                            </button>
-                            <button class="btn btn-outline-dark" onclick="generatePrintableReport('سعيد آل حدله', 'فهد الشهراني')">
+                            <button class="btn btn-outline-primary" onclick="generatePrintableReport('سعيد آل حدله', 'فهد الشهراني')">
                                 <i class="fas fa-file-alt me-1"></i>
                                 طباعة تقرير رسمي
                             </button>
